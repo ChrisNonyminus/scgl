@@ -1,5 +1,5 @@
 #include "cGDriver.h"
-#include <GL/glew.h>
+#include "GLSupport.h"
 #include <GLFW/glfw3.h>
 
 #ifdef NDEBUG
@@ -151,11 +151,11 @@ namespace nSCGL
 		glTexParameteri(GL_TEXTURE_2D, texParamNameMap[pname], texParamMap[param]);
 	}
 
-	void cGDriver::TexStage(GLenum texture) {
-		if (videoModes[currentVideoMode].supportsMultitexture || texture != 0) {
-			if (texture < maxTextureUnits) {
-				activeTextureStage = texture;
-				glClientActiveTexture(GL_TEXTURE0 + texture);
+	void cGDriver::TexStage(GLenum texUnit) {
+		if (videoModes[currentVideoMode].supportsMultitexture || texUnit != 0) {
+			if (texUnit < maxTextureUnits) {
+				activeTextureStage = texUnit;
+				glClientActiveTexture(GL_TEXTURE0 + texUnit);
 				return;
 			}
 
@@ -219,7 +219,7 @@ namespace nSCGL
 
 	void cGDriver::TexStageCombine(eGDTextureStageCombineParamType gdParamType, eGDTextureStageCombineModeParam gdParam) {
 		static GLenum pnameMap[] = { GL_COMBINE_RGB, GL_COMBINE_ALPHA };
-		static GLint paramMap[] = { GL_REPLACE, GL_MODULATE, GL_ADD, GL_ADD_SIGNED, GL_INTERPOLATE, GL_DOT3_RGB_EXT };
+		static GLint paramMap[] = { GL_REPLACE, GL_MODULATE, GL_ADD, GL_ADD_SIGNED, GL_INTERPOLATE, GL_DOT3_RGB };
 
 #ifndef NDEBUG
 		if (gdParamType >= sizeof(pnameMap) / sizeof(pnameMap[0]) || gdParam >= sizeof(paramMap) / sizeof(paramMap[0])) {
@@ -301,8 +301,8 @@ namespace nSCGL
 		glBindTexture(GL_TEXTURE_2D, textureId);
 	}
 
-	intptr_t cGDriver::GetTexture(GLuint texture) {
-		glActiveTexture(GL_TEXTURE0 + texture);
+	intptr_t cGDriver::GetTexture(GLenum texUnit) {
+		glActiveTexture(GL_TEXTURE0 + texUnit);
 
 		int activeTexture;
 		glGetIntegerv(GL_TEXTURE_BINDING_2D, &activeTexture);
