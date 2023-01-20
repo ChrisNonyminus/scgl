@@ -109,8 +109,9 @@ namespace nSCGL
 		struct TextureStageData
 		{
 			uint32_t coordSrc;
-			uint32_t unknown;
-			bool enabled;
+			void const* textureHandle;
+			bool toBeEnabled;
+			bool currentlyEnabled;
 		};
 
 	private:
@@ -157,7 +158,7 @@ namespace nSCGL
 	private:
 		void SetLastError(DriverError err);
 		void SetLightingParameters();
-		void SetTextureState();
+		void ApplyTextureStages();
 		int32_t InitializeVideoModeVector(void);
 
 	public:
